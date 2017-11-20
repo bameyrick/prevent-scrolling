@@ -1,9 +1,9 @@
 {
 	"name": "prevent-scrolling",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Prevent scrolling while optionally allowing scrolling on specified elements",
-	"main": "./dist/src/index.js",
-	"types": "./dist/src/index.d.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"author": "Ben Meyrick <bameyrick@gmail.com>",
 	"license": "MIT",
 	"keywords": ["scroll", "lock", "overflow", "overscroll", "prevent"],
