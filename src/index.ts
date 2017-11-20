@@ -1,4 +1,6 @@
-import { USER_SCROLL_EVENTS } from './user-scroll-events';
+import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
+
+import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 
 let allowScrollElements: HTMLElement[] = [];
 
@@ -49,31 +51,20 @@ function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
 }
 
 function preventDefaultKeyboard(event: KeyboardEvent): void {
+	const keyCode = event.keyCode;
 	const tagName = (<HTMLElement>event.srcElement).tagName.toLowerCase();
 
-	if (tagName !== 'input' && tagName !== 'textbox') {
+	if (tagName !== 'input' && tagName !== 'textbox' && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
 		event.preventDefault();
 	}
 }
 
 function setOverScrollEvents(enable: boolean): void {
 	allowScrollElements.forEach(element => {
-		USER_SCROLL_EVENTS.forEach(event => {
-			if (enable) {
-				element.addEventListener(event, () => handleOverScroll(element));
-			} else {
-				element.removeEventListener(event, () => handleOverScroll(element));
-			}
-		});
+		if (enable) {
+			PreventOverScrolling(element);
+		} else {
+			ReEnableOverScrolling(element);
+		}
 	});
-}
-
-function handleOverScroll(element: HTMLElement): void {
-	const scrollTop = element.scrollTop;
-
-	if (scrollTop === 0) {
-		element.scrollTop = 1;
-	} else if (scrollTop + element.offsetHeight === element.scrollHeight) {
-		element.scrollTop = scrollTop - 1;
-	}
 }
