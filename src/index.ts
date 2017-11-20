@@ -2,8 +2,6 @@ import { USER_SCROLL_EVENTS } from './user-scroll-events';
 
 let allowScrollElements: HTMLElement[] = [];
 
-const win = window;
-
 export function PreventScrolling(allowScrollingOn: HTMLElement | HTMLElement[]): void {
 	if (Array.isArray(allowScrollingOn)) {
 		allowScrollElements = allowScrollingOn;
