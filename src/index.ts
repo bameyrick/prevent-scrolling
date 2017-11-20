@@ -1,8 +1,11 @@
-import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
-
 import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 
+const win = window;
+
 let allowScrollElements: HTMLElement[] = [];
+
+let previousScrollX: number;
+let previousScrollY: number;
 
 export function PreventScrolling(allowScrollingOn: HTMLElement | HTMLElement[]): void {
 	if (Array.isArray(allowScrollingOn)) {
@@ -11,43 +14,45 @@ export function PreventScrolling(allowScrollingOn: HTMLElement | HTMLElement[]):
 		allowScrollElements = [allowScrollingOn];
 	}
 
+	lockWindow();
 	setScrollingEvents(true);
 }
 
 export function ReEnableScrolling(): void {
+	unlockWindow();
 	setScrollingEvents(false);
 }
 
 function setScrollingEvents(enable: boolean): void {
 	USER_SCROLL_EVENTS.forEach(event => {
 		if (enable) {
-			document.addEventListener(event, preventDefault);
+			win.addEventListener(event, preventDefault);
 		} else {
-			document.removeEventListener(event, preventDefault);
+			win.removeEventListener(event, preventDefault);
 		}
 	});
 
 	if (enable) {
-		document.addEventListener('keydown', preventDefaultKeyboard);
+		win.addEventListener('keydown', preventDefaultKeyboard);
 	} else {
-		document.removeEventListener('keydown', preventDefaultKeyboard);
-	}
-
-	if (allowScrollElements.length) {
-		setOverScrollEvents(enable);
+		win.removeEventListener('keydown', preventDefaultKeyboard);
+		allowScrollElements = [];
 	}
 }
 
 function preventDefault(event: Event): void {
 	const source = <HTMLElement>event.srcElement;
 
-	if (!(!!allowScrollElements.length && sourceIsScrollElementOrChild(source))) {
+	if (!sourceIsScrollElementOrChild(source)) {
 		event.preventDefault();
 	}
 }
 
 function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
-	return !!allowScrollElements.find(e => e === element || e.contains(element));
+	if (allowScrollElements.length) {
+		return !!allowScrollElements.find(e => e === element || e.contains(element));
+	}
+	return false;
 }
 
 function preventDefaultKeyboard(event: KeyboardEvent): void {
@@ -59,12 +64,17 @@ function preventDefaultKeyboard(event: KeyboardEvent): void {
 	}
 }
 
-function setOverScrollEvents(enable: boolean): void {
-	allowScrollElements.forEach(element => {
-		if (enable) {
-			PreventOverScrolling(element);
-		} else {
-			ReEnableOverScrolling(element);
-		}
-	});
+function lockWindow(): void {
+	previousScrollX = win.pageXOffset;
+	previousScrollY = win.pageYOffset;
+
+	win.addEventListener('scroll', setWindowScroll);
+}
+
+function unlockWindow(): void {
+	win.removeEventListener('scroll', setWindowScroll);
+}
+
+function setWindowScroll(): void {
+	win.scrollTo(previousScrollX, previousScrollY);
 }
