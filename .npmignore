@@ -1,0 +1,9 @@
+*.log
+.DS_Store
+Thumbs.db
+node_modules/
+src/
+.editorconfig
+.gitignore
+tsconfig.json
+tslint.json
