@@ -7,11 +7,13 @@ let allowScrollElements: HTMLElement[] = [];
 let previousScrollX: number;
 let previousScrollY: number;
 
-export function PreventScrolling(allowScrollingOn: HTMLElement | HTMLElement[]): void {
-	if (Array.isArray(allowScrollingOn)) {
-		allowScrollElements = allowScrollingOn;
-	} else {
-		allowScrollElements = [allowScrollingOn];
+export function PreventScrolling(allowScrollingOn?: HTMLElement | HTMLElement[]): void {
+	if (allowScrollingOn) {
+		if (Array.isArray(allowScrollingOn)) {
+			allowScrollElements = allowScrollingOn;
+		} else {
+			allowScrollElements = [allowScrollingOn];
+		}
 	}
 
 	lockWindow();
