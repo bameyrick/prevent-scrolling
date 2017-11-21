@@ -1,4 +1,5 @@
 import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
+import { passiveSupported } from './passive-supported';
 
 const win = window;
 
@@ -28,9 +29,9 @@ export function ReEnableScrolling(): void {
 function setScrollingEvents(enable: boolean): void {
 	USER_SCROLL_EVENTS.forEach(event => {
 		if (enable) {
-			win.addEventListener(event, preventDefault);
+			win.addEventListener(event, preventDefault, passiveSupported ? <any>{ passive: false } : null);
 		} else {
-			win.removeEventListener(event, preventDefault);
+			win.removeEventListener(event, preventDefault, passiveSupported ? <any>{ passive: false } : null);
 		}
 	});
 
