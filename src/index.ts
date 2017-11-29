@@ -1,3 +1,5 @@
+import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
+
 import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 import { passiveSupported } from './passive-supported';
 
@@ -7,6 +9,9 @@ let allowScrollElements: HTMLElement[] = [];
 
 let previousScrollX: number;
 let previousScrollY: number;
+let scrollableAreaHasFocus = false;
+
+win.addEventListener('click', handleWindowClick);
 
 export function PreventScrolling(allowScrollingOn?: HTMLElement | HTMLElement[]): void {
 	if (allowScrollingOn) {
@@ -35,6 +40,16 @@ function setScrollingEvents(enable: boolean): void {
 		}
 	});
 
+	allowScrollElements.forEach(element => {
+		if (enable) {
+			element.addEventListener('click', handleScrollElementClick);
+			PreventOverScrolling(element);
+		} else {
+			element.removeEventListener('click', handleScrollElementClick);
+			ReEnableOverScrolling(element);
+		}
+	});
+
 	if (enable) {
 		win.addEventListener('keydown', preventDefaultKeyboard);
 	} else {
@@ -60,9 +75,8 @@ function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
 
 function preventDefaultKeyboard(event: KeyboardEvent): void {
 	const keyCode = event.keyCode;
-	const tagName = (<HTMLElement>event.srcElement).tagName.toLowerCase();
 
-	if (tagName !== 'input' && tagName !== 'textbox' && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
+	if (!scrollableAreaHasFocus && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
 		event.preventDefault();
 	}
 }
@@ -80,4 +94,12 @@ function unlockWindow(): void {
 
 function setWindowScroll(): void {
 	win.scrollTo(previousScrollX, previousScrollY);
+}
+
+function handleWindowClick(): void {
+	scrollableAreaHasFocus = false;
+}
+
+function handleScrollElementClick(): void {
+	scrollableAreaHasFocus = true;
 }

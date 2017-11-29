@@ -571,6 +571,10 @@ pretty-format@^21.2.1:
     ansi-regex "^3.0.0"
     ansi-styles "^3.2.0"
 
+prevent-overscrolling@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/prevent-overscrolling/-/prevent-overscrolling-1.1.0.tgz#95ee3d35633b67644497227dc45af0cb35b38423"
+
 pseudomap@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
