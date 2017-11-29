@@ -1,4 +1,4 @@
-import { USER_SCROLL_EVENTS } from './user-scroll-events';
+import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 import { passiveSupported } from './passive-supported';
 
 const win = window;
@@ -35,7 +35,10 @@ function setScrollingEvents(enable: boolean): void {
 		}
 	});
 
-	if (!enable) {
+	if (enable) {
+		win.addEventListener('keydown', preventDefaultKeyboard);
+	} else {
+		win.removeEventListener('keydown', preventDefaultKeyboard);
 		allowScrollElements = [];
 	}
 }
@@ -53,6 +56,15 @@ function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
 		return !!allowScrollElements.find(e => e === element || e.contains(element));
 	}
 	return false;
+}
+
+function preventDefaultKeyboard(event: KeyboardEvent): void {
+	const keyCode = event.keyCode;
+	const tagName = (<HTMLElement>event.srcElement).tagName.toLowerCase();
+
+	if (tagName !== 'input' && tagName !== 'textbox' && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
+		event.preventDefault();
+	}
 }
 
 function lockWindow(): void {
