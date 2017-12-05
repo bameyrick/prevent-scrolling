@@ -1,6 +1,6 @@
 {
 	"name": "prevent-scrolling",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "Prevent scrolling while optionally allowing scrolling on specified elements",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -28,6 +28,7 @@
 		"*.json": ["prettier --print-width 140 --use-tabs --single-quote --trailing-comma es5 --parser json --write", "git add"]
 	},
 	"devDependencies": {
+		"@types/ua-parser-js": "^0.7.32",
 		"husky": "^0.14.3",
 		"lint-staged": "^5.0.0",
 		"prettier": "^1.8.2",
@@ -37,6 +38,7 @@
 		"typescript": "^2.6.1"
 	},
 	"dependencies": {
-		"prevent-overscrolling": "^1.1.0"
+		"prevent-overscrolling": "^1.1.0",
+		"ua-parser-js": "^0.7.17"
 	}
 }

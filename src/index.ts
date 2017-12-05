@@ -1,9 +1,15 @@
 import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
+import { UAParser } from 'ua-parser-js';
 
 import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 import { passiveSupported } from './passive-supported';
 
+const PREVENT_WINDOW_SCROLL_BROWSERS = ['Safari', 'IE', 'Edge'];
+
+const browser = new UAParser().getBrowser().name || '';
 const win = window;
+
+console.log(browser);
 
 let allowScrollElements: HTMLElement[] = [];
 
@@ -85,7 +91,9 @@ function lockWindow(): void {
 	previousScrollX = win.pageXOffset;
 	previousScrollY = win.pageYOffset;
 
-	win.addEventListener('scroll', setWindowScroll);
+	if (!PREVENT_WINDOW_SCROLL_BROWSERS.includes(browser)) {
+		win.addEventListener('scroll', setWindowScroll);
+	}
 }
 
 function unlockWindow(): void {
