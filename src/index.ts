@@ -9,8 +9,6 @@ const PREVENT_WINDOW_SCROLL_BROWSERS = ['Safari', 'IE', 'Edge'];
 const browser = new UAParser().getBrowser().name || '';
 const win = window;
 
-console.log(browser);
-
 let allowScrollElements: HTMLElement[] = [];
 
 let previousScrollX: number;
