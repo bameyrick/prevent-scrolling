@@ -79,8 +79,9 @@ function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
 
 function preventDefaultKeyboard(event: KeyboardEvent): void {
 	const keyCode = event.keyCode;
+	const source = <HTMLElement>event.target;
 
-	if (!scrollableAreaHasFocus && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
+	if (source.tagName !== 'INPUT' && !scrollableAreaHasFocus && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
 		event.preventDefault();
 	}
 }
