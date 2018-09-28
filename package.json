@@ -1,6 +1,6 @@
 {
 	"name": "prevent-scrolling",
-	"version": "1.2.2",
+	"version": "1.3.0",
 	"description": "Prevent scrolling while optionally allowing scrolling on specified elements",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",

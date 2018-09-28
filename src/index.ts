@@ -4,7 +4,7 @@ import { UAParser } from 'ua-parser-js';
 import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 import { passiveSupported } from './passive-supported';
 
-const PREVENT_WINDOW_SCROLL_BROWSERS = ['Safari', 'IE', 'Edge'];
+const IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS = ['Mobile Safari', 'Safari', 'IE', 'Edge'];
 
 const browser = new UAParser().getBrowser().name || '';
 const win = window;
@@ -14,25 +14,33 @@ let allowScrollElements: HTMLElement[] = [];
 let previousScrollX: number;
 let previousScrollY: number;
 let scrollableAreaHasFocus = false;
+let scrollingPrevented = false;
 
 win.addEventListener('click', handleWindowClick);
 
 export function PreventScrolling(allowScrollingOn?: HTMLElement | HTMLElement[]): void {
-	if (allowScrollingOn) {
-		if (Array.isArray(allowScrollingOn)) {
-			allowScrollElements = allowScrollingOn;
-		} else {
-			allowScrollElements = [allowScrollingOn];
+	if (!scrollingPrevented) {
+		scrollingPrevented = true;
+		if (allowScrollingOn) {
+			if (Array.isArray(allowScrollingOn)) {
+				allowScrollElements = allowScrollingOn;
+			} else {
+				allowScrollElements = [allowScrollingOn];
+			}
 		}
-	}
 
-	lockWindow();
-	setScrollingEvents(true);
+		lockWindow();
+		setScrollingEvents(true);
+	}
 }
 
 export function ReEnableScrolling(): void {
-	unlockWindow();
-	setScrollingEvents(false);
+	if (scrollingPrevented) {
+		unlockWindow();
+		setScrollingEvents(false);
+		setWindowScroll();
+		scrollingPrevented = false;
+	}
 }
 
 function setScrollingEvents(enable: boolean): void {
@@ -90,7 +98,7 @@ function lockWindow(): void {
 	previousScrollX = win.pageXOffset;
 	previousScrollY = win.pageYOffset;
 
-	if (!PREVENT_WINDOW_SCROLL_BROWSERS.includes(browser)) {
+	if (!IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS.includes(browser)) {
 		win.addEventListener('scroll', setWindowScroll);
 	}
 }
