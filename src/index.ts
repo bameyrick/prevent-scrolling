@@ -38,7 +38,6 @@ export function ReEnableScrolling(): void {
 	if (scrollingPrevented) {
 		unlockWindow();
 		setScrollingEvents(false);
-		setWindowScroll();
 		scrollingPrevented = false;
 	}
 }
