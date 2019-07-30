@@ -1,5 +1,4 @@
 {
-	"extends": ["tslint-config-prettier"],
 	"rulesDirectory": ["tslint-plugin-prettier"],
 	"rules": {
 		"arrow-return-shorthand": true,
@@ -42,8 +41,6 @@
 		"no-trailing-whitespace": true,
 		"no-unnecessary-initializer": true,
 		"no-unused-expression": true,
-		"no-unused-variable": [true, "check-parameters"],
-		"no-use-before-declare": true,
 		"no-var-keyword": true,
 		"object-literal-sort-keys": false,
 		"one-line": [true, "check-open-brace", "check-catch", "check-else", "check-whitespace"],
@@ -61,13 +58,7 @@
 		"radix": true,
 		"semicolon": [true, "always"],
 		"triple-equals": [true, "allow-null-check"],
-		"typedef": [
-			true,
-			"call-signature",
-			"parameter",
-			"property-declaration",
-			"member-variable-declaration"
-		],
+		"typedef": [true, "call-signature", "parameter", "property-declaration", "member-variable-declaration"],
 		"typedef-whitespace": [
 			true,
 			{
@@ -78,7 +69,6 @@
 				"variable-declaration": "nospace"
 			}
 		],
-		"typeof-compare": true,
 		"unified-signatures": true,
 		"variable-name": false,
 		"whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator", "check-type"]
