@@ -16,7 +16,8 @@
 		"lint-staged": "lint-staged",
 		"precommit": "lint-staged",
 		"npm-bundle": "rm -rf ./dist && npm run lint && tsc -p ./ --outDir dist/",
-		"tslint-check": "tslint-config-prettier-check ./tslint.json"
+		"tslint-check": "tslint-config-prettier-check ./tslint.json",
+		"dedupe-deps": "npx yarn-deduplicate yarn.lock && yarn"
 	},
 	"lint-staged": {
 		"*.ts": [
