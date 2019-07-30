@@ -15,8 +15,7 @@
 		"lint": "tslint --project src/*.ts",
 		"lint-staged": "lint-staged",
 		"precommit": "lint-staged",
-		"prepublishOnly": "rm -rf ./dist && npm run lint && tsc -p ./ --outDir dist/",
-		"postcommit": "npm run prepublishOnly",
+		"npm-bundle": "rm -rf ./dist && npm run lint && tsc -p ./ --outDir dist/",
 		"tslint-check": "tslint-config-prettier-check ./tslint.json"
 	},
 	"lint-staged": {
