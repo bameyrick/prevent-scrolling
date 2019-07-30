@@ -15,9 +15,11 @@
     "lint": "tslint --project src/*.ts",
     "lint-staged": "lint-staged",
     "precommit": "lint-staged",
-    "npm-bundle": "rm -rf ./dist && npm run lint && tsc -p ./ --outDir dist/",
+    "postcheckout": "yarn tidy-clean",
+    "npm-bundle": "yarn tidy-clean && npm run lint && tsc -p ./ --outDir dist/",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
-    "dedupe-deps": "npx yarn-deduplicate yarn.lock && yarn"
+    "dedupe-deps": "npx yarn-deduplicate yarn.lock && yarn",
+    "tidy-clean": "rm -rf ./dist"
   },
   "lint-staged": {
     "*.ts": ["tslint --project", "prettier --print-width 140 --single-quote --trailing-comma es5 --parser typescript --write", "git add"],
