@@ -88,7 +88,12 @@ function preventDefaultKeyboard(event: KeyboardEvent): void {
 	const keyCode = event.keyCode;
 	const source = <HTMLElement>event.target;
 
-	if (source.tagName !== 'INPUT' && source.tagName !== 'TEXTAREA' && !scrollableAreaHasFocus && USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)) {
+	if (
+		source.tagName !== 'INPUT' &&
+		source.tagName !== 'TEXTAREA' &&
+		!scrollableAreaHasFocus &&
+		USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)
+	) {
 		event.preventDefault();
 	}
 }
