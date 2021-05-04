@@ -20,7 +20,7 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "lint-staged": "lint-staged",
-    "build": "rm -rf ./dist && yarn lint && tsc -p ./ --outDir dist/",
+    "build": "rm -rf ./dist && yarn lint && tsc -p tsconfig.json --outDir dist/",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "dedupe-deps": "npx yarn-deduplicate yarn.lock && yarn"
   },
