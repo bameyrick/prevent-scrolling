@@ -4,6 +4,8 @@ node_js:
 cache: yarn
 jobs:
   include:
+  - stage: test
+    script: yarn lint
   - stage: npm-bundle
     script: yarn build && npm version $TRAVIS_BRANCH --allow-same-version --allow-empty
     deploy:
@@ -14,5 +16,7 @@ jobs:
       on:
         tags: true
 stages:
+- name: test
+  if: tag IS NOT present
 - name: npm-bundle
   if: tag IS present
