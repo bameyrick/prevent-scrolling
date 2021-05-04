@@ -4,17 +4,19 @@ node_js:
 cache: yarn
 jobs:
   include:
+  - stage: test
+    script: yarn lint
   - stage: npm-bundle
-    script: yarn npm-bundle && npm version $TRAVIS_BRANCH --allow-same-version -m
-      "chore - release version %s [skip ci]" --allow-empty
+    script: yarn build && npm version $TRAVIS_BRANCH --allow-same-version --allow-empty
     deploy:
     - provider: npm
-      skip_cleanup: true
       email: bameyrick@gmail.com
       api_key:
         secure: PnpVdW1FXOny3Yzd8fnBQb73JpL+eJiuXSOid1hAw/SgiCsG1Hjio9FZwhrT6NZ0Nj5HzPVDfb1M6hXXbfK4aVIAXxKAuU+QfEHIgiGnQMQc5eCvdV7h1ZF5Q0nqaek3OAMf5qOB7c4IAKexqwuIAEWYlFhBrMOWsvO8PLx+OFgT/Q3B8f7ePCUJrOZ5xttY0XJU5g5Qynsc5oZoT6ZiLSrfNkn82GywU+y+HwnvdkNTjTpiNf0E4UMJk6wqXez7o5n5GYounWXDZfLA9nugW6uvvieFYNp1A5yUPpKLh1eqns4OwP01doF8Ap4F/ianZp4IZEh73KCpermeWIRZhV/wFeZ5UPbVDHSm5oS54Q5A9jsWiQoTbz28+QAJqmjrld+rTaY60/lZla2vhATMRJSVxWso6Ap+WjIAFRKne2CS+LKVgH5NJ+rmqHGwUiJmYUZ6yDuwq9mmAF8pfyogtzwZkijfGnViECPTeV4PtwakAZlufMvPItt4r/iVhYhGRZEA4YK0LVMDjOTJpXaqUuiOqNzLTlvrKCNb3oC/QcbDdirWsUsbZaCoyZjkAuIm+3uDq1JeyAag9xyZrHWEm3nDk3PXl984r8AUAaXnYcYxK5wrS4+GqTm5zqTHcXYjs6RK3L1KgoVqfj8rOv/6AhzreJqvGS4p7Tlr3DqrYqc=
       on:
         tags: true
 stages:
+- name: test
+  if: tag IS NOT present
 - name: npm-bundle
   if: tag IS present
