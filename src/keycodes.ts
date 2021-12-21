@@ -1,4 +1,4 @@
-export enum EKeyCodes {
+export enum KeyCodes {
   SpaceBar = 32,
   PageUp = 33,
   PageDown = 34,

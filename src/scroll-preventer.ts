@@ -2,7 +2,7 @@ import { UAParser } from 'ua-parser-js';
 import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
 
 import { passiveSupported } from './passive-supported';
-import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
+import { USER_MOUSE_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 
 export const IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS = ['Mobile Safari', 'Safari', 'IE', 'Edge'];
 
@@ -60,7 +60,7 @@ export default class ScrollPreventer {
   }
 
   private setScrollingEvents(enable: boolean): void {
-    USER_SCROLL_EVENTS.forEach(event => {
+    USER_MOUSE_SCROLL_EVENTS.forEach(event => {
       window[`${enable ? 'add' : 'remove'}EventListener`](
         event,
         this.preventDefault.bind(this),
