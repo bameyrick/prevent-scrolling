@@ -1,8 +1,7 @@
 const process = require('process');
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-// eslint-disable-next-line
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
 

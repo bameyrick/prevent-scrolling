@@ -14,7 +14,7 @@ export const IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS = ['Mobile Safari', 'Safari',
 /**
  * Whether the scrollable area is currently focused
  */
-let scrollableAreaHasFocus: boolean = false;
+let scrollableAreaHasFocus = false;
 
 /**
  * Whether the scrolling has been prevented
@@ -39,10 +39,13 @@ let allowScrollElements: HTMLElement[] = [];
 /**
  * Whether or not we can actually prevent user scrolling
  */
-const mayPreventWindowScroll: boolean = !IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS.includes(new UAParser().getBrowser().name || '');
+const mayPreventWindowScroll = !IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS.includes(new UAParser().getBrowser().name || '');
 
 window.addEventListener('click', () => (scrollableAreaHasFocus = false));
 
+/**
+ * Prevents scrolling anywhere except for optimal elements passed to the allowScrollingOn parameter
+ */
 export function PreventScrolling(allowScrollingOn?: HTMLElement | HTMLElement[]): void {
   if (scrollingPrevented) {
     return;
@@ -66,6 +69,9 @@ export function ReEnableScrolling(): void {
   }
 }
 
+/**
+ * Prevents the window from scrolling
+ */
 function lockWindow(): void {
   previousScrollX = window.pageXOffset;
   previousScrollY = window.pageYOffset;
@@ -75,10 +81,16 @@ function lockWindow(): void {
   }
 }
 
+/**
+ * Allows the window to scroll again
+ */
 function unlockWindow(): void {
   window.removeEventListener('scroll', setWindowScroll);
 }
 
+/**
+ * Sets the window scroll position back to its previous position
+ */
 function setWindowScroll(): void {
   if (!isNullOrUndefined(previousScrollX) && !isNullOrUndefined(previousScrollY)) {
     window.scrollTo(previousScrollX, previousScrollY);
@@ -87,7 +99,11 @@ function setWindowScroll(): void {
 
 function setScrollingEvents(enable: boolean): void {
   MOUSE_SCROLL_EVENTS.forEach(event => {
-    window[`${enable ? 'add' : 'remove'}EventListener`](event, preventDefault, passiveSupported ? <any>{ passive: false } : null);
+    window[`${enable ? 'add' : 'remove'}EventListener`](
+      event,
+      preventDefault,
+      passiveSupported ? <AddEventListenerOptions>{ passive: false } : undefined
+    );
   });
 
   allowScrollElements.forEach(element => {
@@ -122,6 +138,9 @@ function sourceIsScrollElementOrChild(target: EventTarget | null): boolean {
   return false;
 }
 
+/**
+ * Handles the user clicking on a scroll element
+ */
 function handleScrollElementClick(): void {
   scrollableAreaHasFocus = true;
 }
