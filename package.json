@@ -28,9 +28,9 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["prettier --print-width 140 --single-quote --trailing-comma es5 --parser typescript --write", "eslint . --ext .ts", "git add"],
-    "*.js": ["prettier --print-width 140 --single-quote --arrow-parens avoid --trailing-comma es5 --parser babel --write", "git add"],
-    "*.json": ["prettier --print-width 140 --single-quote --trailing-comma es5 --parser json --write", "git add"]
+    "*.ts": ["prettier --print-width 140 --single-quote --trailing-comma es5 --parser typescript --write", "eslint . --ext .ts"],
+    "*.js": ["prettier --print-width 140 --single-quote --arrow-parens avoid --trailing-comma es5 --parser babel --write"],
+    "*.json": ["prettier --print-width 140 --single-quote --trailing-comma es5 --parser json --write"]
   },
   "devDependencies": {
     "@types/jasmine": "^3.10.2",
