@@ -14,7 +14,8 @@
   "scripts": {
     "lint": "tslint --project tslint.json",
     "lint-staged": "lint-staged",
-    "npm-bundle": "yarn tidy-clean && yarn lint && tsc -p ./ --outDir dist/",
+    "test": "KARMA_SINGLE_RUN=false karma start ./karma.conf.js",
+    "test-single": "yarn tidy-clean && yarn lint && yarn karma start ./karma.conf.js",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "tidy-clean": "rm -rf ./dist",
     "dedupe-deps": "npx yarn-deduplicate yarn.lock && yarn"
@@ -31,18 +32,33 @@
       "prettier --print-width 140 --single-quote --trailing-comma es5 --parser typescript --write",
       "git add"
     ],
+    "*.js": ["prettier --print-width 140 --single-quote --arrow-parens avoid --trailing-comma es5 --parser babel --write", "git add"],
     "*.json": ["prettier --print-width 140 --single-quote --trailing-comma es5 --parser json --write", "git add"]
   },
   "devDependencies": {
+    "@types/jasmine": "^3.10.2",
     "@types/ua-parser-js": "^0.7.32",
+    "codecov": "^3.8.3",
     "husky": "^3.0.2",
+    "jasmine-core": "^3.10.1",
+    "karma": "^6.3.9",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-coverage": "^2.1.0",
+    "karma-jasmine": "^4.0.1",
+    "karma-spec-reporter": "^0.0.32",
+    "karma-typescript": "^5.5.2",
+    "karma-typescript-es6-transform": "^5.5.2",
     "lint-staged": "^9.2.1",
     "prettier": "^1.18.2",
+    "puppeteer": "^13.0.0",
     "tslint": "^5.8.0",
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.5.3"
   },
   "dependencies": {
+    "@qntm-code/utils": "^2.6.2",
+    "enum-keys-values-entries": "^1.0.2",
     "prevent-overscrolling": "^1.1.0",
     "ua-parser-js": "^0.7.20"
   }
