@@ -6,6 +6,29 @@ describe(`prevent scrolling`, () => {
   const bodyWidth = 10000;
   const bodyHeight = 10000;
 
+  const input = document.createElement('input');
+  const textarea = document.createElement('textarea');
+  const scrollableElement = document.createElement('div');
+
+  beforeAll(() => {
+    document.body.append(input);
+    document.body.append(textarea);
+
+    scrollableElement.style.width = '100px';
+    scrollableElement.style.height = '100px';
+    scrollableElement.style.overflow = 'auto';
+
+    const innerElement = document.createElement('div');
+    innerElement.style.width = '200px';
+    innerElement.style.height = '200px';
+
+    scrollableElement.append(innerElement);
+
+    document.body.append(scrollableElement);
+
+    window.dispatchEvent(new Event('click'));
+  });
+
   beforeEach(() => {
     const body = document.body;
 
@@ -16,22 +39,30 @@ describe(`prevent scrolling`, () => {
   });
 
   it(`Should have set the testbed up for scrolling`, () => {
-    expect(window.outerHeight > window.innerHeight).toBeTrue();
     expect(window.scrollX).toEqual(bodyWidth / 2);
     expect(window.scrollY).toEqual(bodyHeight / 2);
   });
 
   describe(`When scrolling prevented`, () => {
-    beforeEach(() => PreventScrolling());
+    beforeEach(() => PreventScrolling(scrollableElement));
 
     afterEach(() => ReEnableScrolling());
 
+    it(`Should do nothing if scrolling has already been prevented`, () => {
+      spyOn(window, 'addEventListener');
+
+      PreventScrolling();
+
+      expect(window.addEventListener).not.toHaveBeenCalled();
+    });
+
     MOUSE_SCROLL_EVENTS.forEach(mouseEvent => {
       it(`Should prevent default on a ${mouseEvent} event`, () => {
-        const event = new MouseEvent(mouseEvent, { screenY: 10, clientY: 10 });
+        const event = new MouseEvent(mouseEvent, { screenY: 10, clientY: 10, bubbles: true });
 
         spyOn(event, 'preventDefault');
 
+        input.dispatchEvent(event);
         window.dispatchEvent(event);
 
         expect(event.preventDefault).toHaveBeenCalled();
@@ -60,6 +91,38 @@ describe(`prevent scrolling`, () => {
       expect(event.preventDefault).not.toHaveBeenCalled();
     });
 
+    it(`Shouldn't prevent default on a keyboard event triggered from an input`, () => {
+      const event = new KeyboardEvent('keydown', { key: Key.Down });
+
+      spyOn(event, 'preventDefault');
+
+      input.dispatchEvent(event);
+
+      expect(event.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it(`Shouldn't prevent default on a keyboard event triggered from an textarea`, () => {
+      const event = new KeyboardEvent('keydown', { key: Key.Down });
+
+      spyOn(event, 'preventDefault');
+
+      textarea.dispatchEvent(event);
+
+      expect(event.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it(`Shouldn't prevent default if a allow scrolling element has been clicked`, () => {
+      const event = new KeyboardEvent('keydown', { key: Key.Down });
+
+      spyOn(event, 'preventDefault');
+
+      scrollableElement.dispatchEvent(new Event('click'));
+
+      window.dispatchEvent(event);
+
+      expect(event.preventDefault).not.toHaveBeenCalled();
+    });
+
     it(`Should prevent window scrolling`, () => {
       const previousScrollX = window.pageXOffset;
       const previousScrollY = window.pageYOffset;
@@ -75,7 +138,7 @@ describe(`prevent scrolling`, () => {
 
   describe(`When scrolling re enabled`, () => {
     beforeEach(() => {
-      PreventScrolling();
+      PreventScrolling([scrollableElement]);
       ReEnableScrolling();
     });
 
@@ -92,7 +155,7 @@ describe(`prevent scrolling`, () => {
     });
 
     Enum.entries(Key).forEach(([name, key]: [string, string]) => {
-      it(`Should'nt prevent default on a keydown event with key ${name}`, () => {
+      it(`Shouldn't prevent default on a keydown event with key ${name}`, () => {
         const event = new KeyboardEvent('keydown', { key });
 
         spyOn(event, 'preventDefault');

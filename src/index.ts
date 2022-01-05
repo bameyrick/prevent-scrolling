@@ -5,7 +5,7 @@ import { Enum } from 'enum-keys-values-entries';
 import { passiveSupported } from './passive-supported';
 import { MouseEvent } from './mouse-event';
 import { Key } from './keycodes';
-import { isNullOrUndefined } from '@qntm-code/utils';
+import { isEmpty, isNullOrUndefined } from '@qntm-code/utils';
 
 export const MOUSE_SCROLL_EVENTS: MouseEvent[] = Enum.values(MouseEvent);
 export const KEYBOARD_SCROLL_KEYS: Key[] = Enum.values(Key);
@@ -50,7 +50,7 @@ export function PreventScrolling(allowScrollingOn?: HTMLElement | HTMLElement[])
 
   scrollingPrevented = true;
 
-  if (allowScrollingOn) {
+  if (!isNullOrUndefined(allowScrollingOn)) {
     allowScrollElements = Array.isArray(allowScrollingOn) ? allowScrollingOn : [allowScrollingOn];
   }
 
@@ -109,14 +109,14 @@ function setScrollingEvents(enable: boolean): void {
 }
 
 function preventDefault(event: Event): void {
-  if (!sourceIsScrollElementOrChild(<HTMLElement>event.target)) {
+  if (!sourceIsScrollElementOrChild(event.target)) {
     event.preventDefault();
   }
 }
 
-function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
-  if (allowScrollElements.length) {
-    return !!allowScrollElements.find(e => e === element || e.contains(element));
+function sourceIsScrollElementOrChild(target: EventTarget | null): boolean {
+  if (!isNullOrUndefined(target) && !isEmpty(allowScrollElements) && target !== window) {
+    return !!allowScrollElements.find(e => e === target || e.contains(target as HTMLElement));
   }
 
   return false;
