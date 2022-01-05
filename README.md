@@ -4,6 +4,7 @@ Prevent scrolling while optionally allowing scrolling on specified elements.
 
 [![GitHub release](https://img.shields.io/github/release/bameyrick/prevent-scrolling.svg)](https://github.com/bameyrick/prevent-scrolling/releases)
 [![Build Status](https://travis-ci.com/bameyrick/prevent-scrolling.svg?branch=master)](https://travis-ci.com/bameyrick/prevent-scrolling)
+[![codecov](https://codecov.io/gh/bameyrick/prevent-scrolling/branch/master/graph/badge.svg)](https://codecov.io/gh/bameyrick/prevent-scrolling)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8aecf75299c64acf88b3a433bb590367)](https://www.codacy.com/gh/bameyrick/prevent-scrolling)
 
 ## Features

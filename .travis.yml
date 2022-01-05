@@ -1,13 +1,14 @@
 language: node_js
+version: "~> 1.0.0"
 node_js:
-- 14.16.1
+- 16.13.1
 cache: yarn
 jobs:
   include:
   - stage: test
-    script: yarn lint
+    script: yarn test-single && codecov
   - stage: npm-bundle
-    script: yarn build && npm version $TRAVIS_BRANCH --allow-same-version --allow-empty
+    script: yarn npm-bundle && npm version $TRAVIS_BRANCH --allow-same-version --allow-empty
     deploy:
       edge: true
       provider: npm

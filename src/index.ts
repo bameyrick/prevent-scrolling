@@ -1,45 +1,66 @@
-import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
 import { UAParser } from 'ua-parser-js';
+import { PreventOverScrolling, ReEnableOverScrolling } from 'prevent-overscrolling';
+import { Enum } from 'enum-keys-values-entries';
 
-import { USER_SCROLL_EVENTS, USER_SCROLL_KEYBOARD_EVENTS } from './user-scroll-events';
 import { passiveSupported } from './passive-supported';
+import { MouseEvent } from './mouse-event';
+import { Key } from './keycodes';
+import { isEmpty, isNullOrUndefined } from '@qntm-code/utils';
 
-const IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS = ['Mobile Safari', 'Safari', 'IE', 'Edge'];
+export const MOUSE_SCROLL_EVENTS: MouseEvent[] = Enum.values(MouseEvent);
+export const KEYBOARD_SCROLL_KEYS: Key[] = Enum.values(Key);
+export const IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS = ['Mobile Safari', 'Safari', 'IE', 'Edge'];
 
-const browser = new UAParser().getBrowser().name || '';
-const win = window;
+/**
+ * Whether the scrollable area is currently focused
+ */
+let scrollableAreaHasFocus = false;
 
+/**
+ * Whether the scrolling has been prevented
+ */
+let scrollingPrevented: boolean;
+
+/**
+ * The previous scroll x value
+ */
+let previousScrollX: number;
+
+/**
+ * The previous scroll y value
+ */
+let previousScrollY: number;
+
+/**
+ * Elements to allow scrolling on
+ */
 let allowScrollElements: HTMLElement[] = [];
 
-let previousScrollX: number;
-let previousScrollY: number;
-let scrollableAreaHasFocus = false;
-let scrollingPrevented = false;
+/**
+ * Whether or not we can actually prevent user scrolling
+ */
+const mayPreventWindowScroll = !IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS.includes(new UAParser().getBrowser().name || '');
 
-win.addEventListener('click', handleWindowClick);
+window.addEventListener('click', () => (scrollableAreaHasFocus = false));
 
 /**
  * Prevents scrolling anywhere except for optimal elements passed to the allowScrollingOn parameter
  */
 export function PreventScrolling(allowScrollingOn?: HTMLElement | HTMLElement[]): void {
-  if (!scrollingPrevented) {
-    scrollingPrevented = true;
-    if (allowScrollingOn) {
-      if (Array.isArray(allowScrollingOn)) {
-        allowScrollElements = allowScrollingOn;
-      } else {
-        allowScrollElements = [allowScrollingOn];
-      }
-    }
-
-    lockWindow();
-    setScrollingEvents(true);
+  if (scrollingPrevented) {
+    return;
   }
+
+  scrollingPrevented = true;
+
+  if (!isNullOrUndefined(allowScrollingOn)) {
+    allowScrollElements = Array.isArray(allowScrollingOn) ? allowScrollingOn : [allowScrollingOn];
+  }
+
+  lockWindow();
+  setScrollingEvents(true);
 }
 
-/**
- * Re-enables scrolling everywhere
- */
 export function ReEnableScrolling(): void {
   if (scrollingPrevented) {
     unlockWindow();
@@ -49,17 +70,40 @@ export function ReEnableScrolling(): void {
 }
 
 /**
- * Sets the scrolling events on the window
+ * Prevents the window from scrolling
  */
+function lockWindow(): void {
+  previousScrollX = window.pageXOffset;
+  previousScrollY = window.pageYOffset;
+
+  if (mayPreventWindowScroll) {
+    window.addEventListener('scroll', setWindowScroll);
+  }
+}
+
+/**
+ * Allows the window to scroll again
+ */
+function unlockWindow(): void {
+  window.removeEventListener('scroll', setWindowScroll);
+}
+
+/**
+ * Sets the window scroll position back to its previous position
+ */
+function setWindowScroll(): void {
+  if (!isNullOrUndefined(previousScrollX) && !isNullOrUndefined(previousScrollY)) {
+    window.scrollTo(previousScrollX, previousScrollY);
+  }
+}
+
 function setScrollingEvents(enable: boolean): void {
-  USER_SCROLL_EVENTS.forEach(event => {
-    if (enable) {
-      // tslint:disable-next-line:no-any
-      win.addEventListener(event, preventDefault, passiveSupported ? { passive: false } as any : null);
-    } else {
-      // tslint:disable-next-line:no-any
-      win.removeEventListener(event, preventDefault, passiveSupported ? { passive: false } as any : null);
-    }
+  MOUSE_SCROLL_EVENTS.forEach(event => {
+    window[`${enable ? 'add' : 'remove'}EventListener`](
+      event,
+      preventDefault,
+      passiveSupported ? <AddEventListenerOptions>{ passive: false } : undefined
+    );
   });
 
   allowScrollElements.forEach(element => {
@@ -73,80 +117,25 @@ function setScrollingEvents(enable: boolean): void {
   });
 
   if (enable) {
-    win.addEventListener('keydown', preventDefaultKeyboard);
+    window.addEventListener('keydown', preventDefaultKeyboard);
   } else {
-    win.removeEventListener('keydown', preventDefaultKeyboard);
+    window.removeEventListener('keydown', preventDefaultKeyboard);
     allowScrollElements = [];
   }
 }
 
-/**
- * Prevents default behaviour on an event if the source is not a scroll element or child of a scroll element
- */
 function preventDefault(event: Event): void {
-  if (!sourceIsScrollElementOrChild(event.target as HTMLElement)) {
+  if (!sourceIsScrollElementOrChild(event.target)) {
     event.preventDefault();
   }
 }
 
-/**
- * Checks whether the given element is a scroll element or child of a scroll element
- */
-function sourceIsScrollElementOrChild(element: HTMLElement): boolean {
-  if (allowScrollElements.length) {
-    return !!allowScrollElements.find(e => e === element || e.contains(element));
+function sourceIsScrollElementOrChild(target: EventTarget | null): boolean {
+  if (!isNullOrUndefined(target) && !isEmpty(allowScrollElements) && target !== window) {
+    return !!allowScrollElements.find(e => e === target || e.contains(target as HTMLElement));
   }
+
   return false;
-}
-
-/**
- * Prevents default behaviour for a keyboard scroll event
- */
-function preventDefaultKeyboard(event: KeyboardEvent): void {
-  const keyCode = event.code;
-  const source = event.target as HTMLElement;
-
-  if (
-    source.tagName !== 'INPUT' &&
-    source.tagName !== 'TEXTAREA' &&
-    !scrollableAreaHasFocus &&
-    USER_SCROLL_KEYBOARD_EVENTS.includes(keyCode)
-  ) {
-    event.preventDefault();
-  }
-}
-
-/**
- * Prevents the window from scrolling
- */
-function lockWindow(): void {
-  previousScrollX = win.pageXOffset;
-  previousScrollY = win.pageYOffset;
-
-  if (!IGNORE_PREVENT_WINDOW_SCROLL_BROWSERS.includes(browser)) {
-    win.addEventListener('scroll', setWindowScroll);
-  }
-}
-
-/**
- * Allows the window to scroll again
- */
-function unlockWindow(): void {
-  win.removeEventListener('scroll', setWindowScroll);
-}
-
-/**
- * Sets the window scroll position back to its previous position
- */
-function setWindowScroll(): void {
-  win.scrollTo(previousScrollX, previousScrollY);
-}
-
-/**
- * Handles a user clicking on the window
- */
-function handleWindowClick(): void {
-  scrollableAreaHasFocus = false;
 }
 
 /**
@@ -154,4 +143,14 @@ function handleWindowClick(): void {
  */
 function handleScrollElementClick(): void {
   scrollableAreaHasFocus = true;
+}
+
+function preventDefaultKeyboard(event: KeyboardEvent): void {
+  if (
+    !['INPUT', 'TEXTAREA'].includes((<HTMLElement>event.target).tagName) &&
+    !scrollableAreaHasFocus &&
+    KEYBOARD_SCROLL_KEYS.includes(event.key as Key)
+  ) {
+    event.preventDefault();
+  }
 }

@@ -7,7 +7,7 @@ try {
     },
   });
 
-  // tslint:disable-next-line:no-empty
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   window.addEventListener('test', () => {}, options);
-  // tslint:disable-next-line:no-empty
+  // eslint-disable-next-line no-empty
 } catch (err) {}
