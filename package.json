@@ -57,9 +57,9 @@
     "typescript": "~4.4.4"
   },
   "dependencies": {
-    "@qntm-code/utils": "^2.6.2",
-    "enum-keys-values-entries": "^1.0.2",
-    "prevent-overscrolling": "^1.1.0",
+    "@qntm-code/utils": "^2.7.1",
+    "enum-keys-values-entries": "^1.0.3",
+    "prevent-overscrolling": "^1.1.3",
     "ua-parser-js": "^0.7.20"
   }
 }
