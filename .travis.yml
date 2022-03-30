@@ -8,7 +8,7 @@ jobs:
   - stage: test
     script: yarn test-single && codecov
   - stage: npm-bundle
-    script: yarn npm-bundle && npm version $TRAVIS_BRANCH --allow-same-version --allow-empty
+    script: yarn build && npm version $TRAVIS_BRANCH --allow-same-version --allow-empty
     deploy:
       edge: true
       provider: npm
