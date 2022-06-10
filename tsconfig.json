@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "module": "commonjs",
-    "target": "ES2015",
+    "module": "esnext",
+    "target": "esnext",
     "sourceMap": false,
     "experimentalDecorators": true,
     "noImplicitAny": false,
