@@ -4865,10 +4865,10 @@ prettier@^2.5.1:
   resolved "https://registry.npmjs.org/prettier/-/prettier-2.6.2.tgz"
   integrity sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==
 
-prevent-overscrolling@^1.1.3:
-  version "1.1.4"
-  resolved "https://registry.npmjs.org/prevent-overscrolling/-/prevent-overscrolling-1.1.4.tgz"
-  integrity sha512-1R+DDVUbHC6zTVcU4/I1rPmFQXZJ89sJ+xFrR91dGspUFYdn/Ji4VPMCESr7BPR7h0i60VjcELQD5mRgJkVHng==
+prevent-overscrolling@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/prevent-overscrolling/-/prevent-overscrolling-1.1.5.tgz#c141c35c41e067579640d682216a6a6771e41a9b"
+  integrity sha512-XFlMZGkftkd/HyVto9Ic0v+sCwqSTIYqg86s+4+HyBWE43HWlJhm7GXoxsrZhznsXsMkJc9NLOe4WglQu67hfQ==
 
 process@^0.11.10:
   version "0.11.10"
